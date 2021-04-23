@@ -476,7 +476,7 @@ int doOpQuery(cJSON *json, int socket_fd)
     else if (stwp_ui2_json_recv.type == STWP_VALUE_TYPE_SelectAWarning)
     {
         sprintf(sql2,"SELECT COUNT(*) from  `%s%s`  ",stwp_util_get_tname_bytype(stwp_ui2_json_recv.type), stwp_ui2_json_recv.uuid);
-        sprintf(sql,"select uuid,type,contents,op_user,FROM_UNIXTIME(op_time) as op_time,op_type,status from `%s%s` ", stwp_util_get_tname_bytype(STWP_VALUE_TYPE_SelectAWarning), stwp_ui2_json_recv.uuid);
+        sprintf(sql,"select uuid,type,contents,op_user, op_time,op_type,status from `%s%s` ", stwp_util_get_tname_bytype(STWP_VALUE_TYPE_SelectAWarning), stwp_ui2_json_recv.uuid);
         if( (nstart !=0xFF && nend != 0xFF) || strlen(stwp_ui2_json_recv.keystr)  ){
             strcat( sql2,"where 1 ");
             strcat(sql,"where 1 ");
@@ -816,7 +816,10 @@ int doOpWarningToPolicyTask(cJSON *json,int socket_fd)
                 //if(pptype && (pptype->type ==cJSON_Number) ){
                 //    w_type = pptype->valueint;
                 //} else{ continue;}
+               
                 cJSON *poptype    = cJSON_GetObjectItem( pDataSub, "op_type");
+                
+                //cJSON *poptype    = cJSON_GetObjectItem( pDataSub, "type");
                 if(poptype && (poptype->type == cJSON_Number ))
                 {
                     w_optype = poptype->valueint;
@@ -840,8 +843,8 @@ int doOpWarningToPolicyTask(cJSON *json,int socket_fd)
                         p_type = 0x20;
                     }
                     else if(w_optype == STWP_AUDIT_TYPE_MEASURE_APP || w_optype == STWP_AUDIT_TYPE_MEASURE_DYNAMIC){
-                        sprintf(p_name,"AutoPolicy-AddDynamicMeasure-%lu",stwp_util_get_time());
-                        p_type = 0x40;
+                        sprintf(p_name,"AutoPolicy-AddApp-%lu",stwp_util_get_time());
+                        p_type = 0x10;
                     }
                     else continue;
                 } else{ continue;}

@@ -16,6 +16,7 @@
 #include "cJSON.h"
 #include "stwp_p2.h"
 #include "stwp_uievent.h"
+#include "stwp_config.h"
 
 
 
@@ -43,6 +44,12 @@ void stwp_receive_stop_sig(int signum)
 int main(int argc, char **argv)
 {
     int opt, ndaemon = 0;
+    printf( "****************************************************************\n");  
+    printf( "**                                                            **\n");
+    printf( "listen on port : %d \n",PORT);
+
+    printf( "**       STWP Server2 Version 1.0.00-20210422                 **\n");
+    printf( "****************************************************************\n");  
 #if 0
     char pbuf[65]= {0x00};
     stwp_util_time_u2s(stwp_util_get_time(),pbuf);
