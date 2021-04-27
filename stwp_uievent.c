@@ -179,7 +179,8 @@ static int stwp_uievent_module_inside_evwait(void)
 
     while(stwp_uievent_stop_flag)
     {
-        int nr;
+        int nr = 0 ;
+        fds[0].revents= 0;
         nr = poll(fds, nfds + 1, 0);
 	
         if(nr == 0)

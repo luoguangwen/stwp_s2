@@ -7,9 +7,11 @@
 #include "stwp_logdump.h"
 
 stwp_mysql_t stwp_mysql;
+#define CHECK_MYSQL_HANDLE() {if(NULL == stwp_mysql.conn) return -1;}
 
 int stwp_mysql_init(void)
 {    
+	stwp_mysql.conn=NULL;
     stwp_mysql.conn = mysql_init(NULL);
     if(!mysql_real_connect(stwp_mysql.conn ,SERVER,USER,PASSWD,DATABASE,0,NULL,0))
     {
@@ -63,6 +65,7 @@ int stwp_mysql_select(char *sql,char* sql2,int rtype,char* outdata)
     int rows_cnt = 0; //记录条数
     int field_cnt= 0; //每条记录有几列
     int count = 0;
+	CHECK_MYSQL_HANDLE()
     if(strlen(sql2))
         count = stwp_mysql_select_cnt(sql2);
     json = cJSON_CreateObject();
@@ -128,6 +131,7 @@ int stwp_mysql_select(char *sql,char* sql2,int rtype,char* outdata)
 int stwp_mysql_select_cnt(char *sql)
  {
      int ncount = 0;
+	 CHECK_MYSQL_HANDLE()
     if (mysql_query(stwp_mysql.conn, sql))
     {
         stwp_logdump_module.push("[STWP_MYSQL]  %s : %s",sql,mysql_error(stwp_mysql.conn));
@@ -152,6 +156,7 @@ int stwp_mysql_write(char *sql,int rtype,char* outdata)
     cJSON *json;
     int err_code = 0;
     int ret = 0;
+	CHECK_MYSQL_HANDLE()
     
     json = cJSON_CreateObject();
     cJSON *JsonArray = cJSON_CreateArray();
@@ -183,6 +188,7 @@ int stwp_get_schema(char *table_name)
 {
     char sql[1024] = {0};
     int num = 0;
+	CHECK_MYSQL_HANDLE()
     sprintf(sql,"%s'%s';",SCHEMA_GET,table_name);
     stwp_logdump_module.push("[STWP_MYSQl] get schema sql = %s",sql);
     if (mysql_query(stwp_mysql.conn, sql))
@@ -237,7 +243,7 @@ int stwp_mysql_loaduser(char *uuid,stwp_user* stwpuser)
     int rows_cnt = 0; //记录条数
     int field_cnt= 0; //每条记录有几列
     char sql[1024] = {0x00};
-
+	CHECK_MYSQL_HANDLE()
     sprintf(sql,"select uuid, account,password,password_salt,\
     histroy_password,histroy_password_salt,pwd_mat,pwd_rat,status,name,address,email,phone,description,permissions,\
     unix_timestamp(pwd_update_time) as pwd_update_time,\
@@ -352,6 +358,7 @@ int stwp_mysql_loaduser_byaccount(char *account,stwp_user* stwpuser)
     int rows_cnt = 0; //记录条数
     int field_cnt= 0; //每条记录有几列
     char sql[1024] = {0x00};
+	CHECK_MYSQL_HANDLE()
 
     sprintf(sql,"select uuid, account,password,password_salt,\
     histroy_password,histroy_password_salt,pwd_mat,pwd_rat,status,name,address,email,phone,description,permissions,\
@@ -470,6 +477,7 @@ int stwp_mysql_loaduser_byuuid(char *uuid,stwp_user* stwpuser)
     int rows_cnt = 0; //记录条数
     int field_cnt= 0; //每条记录有几列
     char sql[1024] = {0x00};
+	CHECK_MYSQL_HANDLE()
 
     sprintf(sql,"select uuid, account,password,password_salt,\
     histroy_password,histroy_password_salt,pwd_mat,pwd_rat,status,name,address,email,phone,description,permissions,\
@@ -584,6 +592,7 @@ int stwp_mysql_saveuser(stwp_user* stwpuser)
 {
    
    char sql[1024] = {0x00};
+   CHECK_MYSQL_HANDLE()
     print_user(stwpuser);
     sprintf( sql, "INSERT  INTO %s \
         (uuid,name,account,password,password_salt,\
@@ -619,6 +628,7 @@ int stwp_mysql_updateuser(stwp_user* stwpuser)
 {
    
    char sql[1024] = {0x00};
+   CHECK_MYSQL_HANDLE()
     print_user(stwpuser);
     sprintf( sql, "UPDATE  %s SET \
         uuid = \'%s\',name= \'%s\',account= \'%s\',password= \'%s\',password_salt= \'%s\',\
@@ -655,6 +665,7 @@ int stwp_mysql_export2csv(char* sql,char* file)
     FILE *fp=NULL;
     int j=0;
     char aline[1024*2]={0x00};
+	CHECK_MYSQL_HANDLE()
     
     fp = fopen(file,"a+");
     if(!fp)

@@ -875,6 +875,7 @@ int doOpWarningToPolicyTask(cJSON *json,int socket_fd)
                 sprintf( sql, "update `stwp_warning_%s` set status=1 where op_object='%s' ; ",hosts,object);
                 memset(outdata,0,sizeof(outdata));                 
                 stwp_mysql_write(sql, type, outdata);
+                //printf("warning to whitelist : %s ",sql);
             
                 printf("-----------------------------------------------\n");
                 printf("sql    = %s \n", sql); 

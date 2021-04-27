@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     printf( "**                                                            **\n");
     printf( "listen on port : %d \n",PORT);
 
-    printf( "**       STWP Server2 Version 1.0.00-20210422                 **\n");
+    printf( "**       STWP Server2 Version 1.0.01-20210427                 **\n");
     printf( "****************************************************************\n");  
 #if 0
     char pbuf[65]= {0x00};
@@ -148,6 +148,7 @@ int main(int argc, char **argv)
     // signal(SIGUSR2, stwp_receive_stop_sig);
 
     /*init logdump*/
+	stwp_util_coreDump();
     stwp_logdump_module.init();
     stwp_logdump_module.run();
 

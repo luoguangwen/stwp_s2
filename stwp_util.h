@@ -47,6 +47,7 @@ extern int stwp_util_gen_salt(char* salt);
 extern long long stwp_util_get_time();
 extern int stwp_util_get_uuid(char buf[37]);
 extern int stwp_util_get_encpwd(char* pwd,char salt[16],char* enc_pwd);
+extern int stwp_util_coreDump();
 
 
 #endif

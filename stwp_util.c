@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <pthread.h>
-
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
@@ -277,3 +277,28 @@ int stwp_util_get_encpwd(char* pwd,char salt[16],char* enc_pwd)
     return 0;
 }
 
+int stwp_util_coreDump()
+{
+	#define CORE_SIZE   1024 * 1024 * 500
+    struct rlimit rlmt;
+    if (getrlimit(RLIMIT_CORE, &rlmt) == -1) {
+        return -1;
+    }
+    printf("Before set rlimit CORE dump current is:%d, max is:%d\n",
+           (int) rlmt.rlim_cur, (int) rlmt.rlim_max);
+
+    rlmt.rlim_cur = (rlim_t) CORE_SIZE;
+    rlmt.rlim_max = (rlim_t) CORE_SIZE;
+
+    if (setrlimit(RLIMIT_CORE, &rlmt) == -1) {
+        return -1;
+    }
+
+    if (getrlimit(RLIMIT_CORE, &rlmt) == -1) {
+        return -1;
+    }
+    printf("After set rlimit CORE dump current is:%d, max is:%d\n",
+           (int) rlmt.rlim_cur, (int) rlmt.rlim_max);
+    return 0;
+
+}
